@@ -5,7 +5,8 @@ import gulpIf from 'gulp-if'
 import livereload from 'gulp-livereload'
 import mergeJson from 'gulp-merge-json'
 import plumber from 'gulp-plumber'
-import sass from 'gulp-sass'
+// import sass from 'gulp-sass'
+var sass = require('gulp-sass')(require('sass'))
 import zip from 'gulp-zip'
 import { merge } from 'event-stream'
 import browserify from 'browserify';
@@ -94,8 +95,8 @@ scripts.forEach(script => {
           }
         ]
       ],
-      sourceMaps: true, 
-      global: true, 
+      sourceMaps: true,
+      global: true,
       ignore: [/\/node_modules\/(?!entity-decode\/)/]
     })
     .transform(preprocessify, {

@@ -79,10 +79,38 @@ function renderError(message, target) {
 /**
  * Generate a Mermaid diagram into a new <div>
  * @param {HTMLPreElement} source Element containing the diagram source code, in Mermaid language.
- * @param {string} id A unique element id. 
+ * @param {string} id A unique element id.
  * @returns {HTMLDivElement} The new <div> element.
  */
 function processElement(source, id) {
+  const html = document.getElementsByTagName('html')
+  const mode = html[0].attributes['data-color-mode'].value
+  if (mode.includes('dark')) {
+    mermaidAPI.initialize({
+      startOnLoad: false,
+      theme: 'dark'
+    })
+  } else if (mode.includes('auto')) {
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      mermaidAPI.initialize({
+        startOnLoad: false,
+        theme: 'dark'
+      })
+    } else {
+      mermaidAPI.initialize({
+        startOnLoad: false,
+        theme: 'default'
+      })
+    }
+  } else {
+    mermaidAPI.initialize({
+      startOnLoad: false,
+      theme: 'default'
+    })
+  }
   const target = document.createElement('div')
   source.after(target) // Note: must happen before render
   try {
@@ -99,7 +127,7 @@ function processElement(source, id) {
       source.style.display = 'none'
     }
 
-    render(code, target, id)    
+    render(code, target, id)
   } catch (error) {
     renderError(error.message, target)
     throw error
@@ -122,9 +150,10 @@ function processUnprocessedElements(idIterator) {
 
 // Mermaid setup
 // Read more: https://mermaidjs.github.io/mermaidAPI.html#configuration
-mermaidAPI.initialize({
-  startOnLoad: false
-})
+// mermaidAPI.initialize({
+//   startOnLoad: false,
+//   theme: 'dark'
+// })
 
 const globalIdIterator = idGenerator()
 
